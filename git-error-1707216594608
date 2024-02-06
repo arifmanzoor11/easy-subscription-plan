@@ -1,0 +1,3 @@
+> git push -u origin plugins
+error: src refspec plugins does not match any
+error: failed to push some refs to 'https://github.com/arifmanzoor11/easy-post-uploader.git'
