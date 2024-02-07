@@ -146,3 +146,10 @@ function subscription_plan_installer_db(){
     include('subscription-plan-installer-db.php');
 }
 register_activation_hook(__file__, 'subscription_plan_installer_db');
+
+// function remove_menu_items() {
+//     if( !current_user_can( 'administrator' ) ):
+//         remove_menu_page( 'edit.php?post_type=easysubscription' );
+//     endif;
+// }
+// add_action( 'admin_menu', 'remove_menu_items' );
