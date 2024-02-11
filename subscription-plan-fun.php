@@ -9,7 +9,7 @@ Author URI: http://guitarchordslyrics.com
 License: GNU GENERAL PUBLIC LICENSE
 */
 // Include other plugin files
-include_once(plugin_dir_path(__FILE__) . 'admin/inc/esy-subscription-admin.php');
+include_once(plugin_dir_path(__FILE__) . 'admin/esy-subscription-admin.php');
 include_once(plugin_dir_path(__FILE__) . 'admin/inc/cpt-subscription.php');
 include_once(plugin_dir_path(__FILE__) . '/subscription-plan-installer-db.php');
 include_once(plugin_dir_path(__FILE__) . 'inc/views/subscription-plans.php');

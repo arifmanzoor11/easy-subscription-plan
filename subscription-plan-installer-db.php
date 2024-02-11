@@ -3,12 +3,12 @@ global $wpdb;
 // Table for storing subscription plans
 $table_name = $wpdb->prefix . 'easy_subscription_plan';
 $my_products_db_version = '1.0.1';
-$sql = "CREATE TABLE IF NOT EXISTS " . $table_name . " (
-    meta_id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+$sql = "CREATE TABLE IF NOT EXISTS `$table_name` (
+    `meta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     `post_id` mediumint(9) NOT NULL,
     `meta_key` varchar(255) NOT NULL,
-    `meta_value` varchar NOT NULL,
-    PRIMARY KEY ID(meta_id)
+    `meta_value` longtext NOT NULL,
+    PRIMARY KEY (`meta_id`)
 );";
 
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
