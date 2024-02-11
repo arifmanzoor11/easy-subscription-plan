@@ -1,7 +1,7 @@
 <?php function easy_subscription_plan_enqueue() {
     // $dir = plugin_dir_url(__FILE__);
 	wp_enqueue_style( 'easy-subscription-plan', plugin_dir_url(__FILE__) . 'assets/css/esysubscription-admin.css' );
-	wp_enqueue_script( 'easy-subscription-plan', plugin_dir_url(__FILE__) . 'assets/js/easy-subscription-plan.js', array(), '1.0.0', true );
+	wp_enqueue_script( 'easy-subscription-plan', plugin_dir_url(__FILE__) . 'assets/js/esysubscription-admin.js', array(), '1.0.0', true );
 }
 add_action( 'admin_init', 'easy_subscription_plan_enqueue' );
 

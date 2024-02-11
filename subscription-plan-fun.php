@@ -1,12 +1,12 @@
 <?php 
-/*
-Plugin Name: Easy Subscription Plans
-Plugin URI: http://guitarchordslyrics.com
-Description: Process payments, establish subscription plans, and control access to content on your membership site with easy subscription Plans.
-Version: 1.0
-Author: Arif M.
-Author URI: http://guitarchordslyrics.com
-License: GNU GENERAL PUBLIC LICENSE
+/**
+* Plugin Name: Easy Subscription Plans
+* Plugin URI: http://guitarchordslyrics.com
+* Description: Process payments, establish subscription plans, and control access to content on your membership site with easy subscription Plans.
+* Version: 1.0
+* Author: Arif M.
+* Author URI: http://guitarchordslyrics.com
+* License: GNU GENERAL PUBLIC LICENSE
 */
 // Include other plugin files
 include_once(plugin_dir_path(__FILE__) . 'admin/esy-subscription-admin.php');
@@ -31,7 +31,7 @@ function enqueue_subscription_scripts() {
 }
 add_action('wp_enqueue_scripts', 'enqueue_subscription_scripts');
 
-include_once(plugin_dir_path(__FILE__) . 'admin/save-transaction-details.php');
+include_once(plugin_dir_path(__FILE__) . 'admin/inc/save-transaction-details.php');
 include_once(plugin_dir_path(__FILE__) . 'inc/subscription_plans_shortcode.php');
 
 // AJAX handler to check if a plan exists in the database
