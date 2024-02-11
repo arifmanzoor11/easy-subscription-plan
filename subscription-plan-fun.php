@@ -142,6 +142,7 @@ function wpa3396_page_template( $page_template )
 add_action( 'init', function() {
     remove_post_type_support( 'easysubscription', 'editor' );
 }, 99);
+
 function subscription_plan_installer_db(){ 
     include('subscription-plan-installer-db.php');
 }
