@@ -22,6 +22,7 @@ function enqueue_subscription_scripts() {
     wp_enqueue_script('paypal-sdk', 'https://www.paypal.com/sdk/js?client-id=' . $client_id . '', array(), null, true);
     wp_enqueue_script('toastify-js', 'https://cdn.jsdelivr.net/npm/toastify-js', array(), null, true);
     wp_enqueue_style('toastify-css', 'https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.css');
+    wp_enqueue_style('easy-subscription-plan-css', plugin_dir_url(__FILE__) . 'assets/css/easy-subscription-plan.css');
     
     // Enqueue custom JavaScript
     wp_enqueue_script('subscription-scripts', plugin_dir_url(__FILE__) . 'subscription-scripts.js', array('jquery'), null, true);

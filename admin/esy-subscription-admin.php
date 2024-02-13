@@ -22,7 +22,7 @@ function easy_subscription_plan_payments() {
  * Display callback for the submenu page.
  */
 function easy_subscription_plan_payments_callback() { 
-    include_once(plugin_dir_path(__FILE__) . 'views/easy-subscription-plan-payments.php');
+    include_once(plugin_dir_path(__FILE__) . 'inc/views/easy-subscription-plan-payments.php');
 }
 
 
@@ -42,7 +42,7 @@ function easy_subscription_plan_settings() {
  * Display callback for the submenu page.
  */
 function easy_subscription_plan_settings_callback() { 
-    include_once(plugin_dir_path(__FILE__) . 'views/easy-subscription-plan-settings.php');
+    include_once(plugin_dir_path(__FILE__) . 'inc/views/easy-subscription-plan-settings.php');
 }
 /*
 * Creating a function to create our CPT
