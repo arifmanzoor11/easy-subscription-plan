@@ -27,7 +27,48 @@ document.addEventListener("DOMContentLoaded", function() {
             success: function(response) {
                 if (response == true) {
                     // Plan exists, open PayPal dialog
-                    openPayPalDialog(price, planName, planId);
+
+
+                    jQuery.ajax({
+                        url: subscription_ajax_object.ajax_url,
+                        type: 'POST',
+                        data: {
+                            action: 'user_has_bought_plan',
+                        },
+                        success: function(response) {
+                            if (response === 'true') {
+                                // User has bought the plan, open PayPal dialog                                
+                                openPayPalDialog(price, planName, planId);
+                            } else if(response === '404') {
+                                // User is not logged in, handle accordingly
+                                console.log('User is not logged in');
+                                // window.location.href = '/wp-admin';
+                                changeView('no-authentication');
+                                // Display error message to the user or handle it as needed
+                            } else {
+
+                                // User has already bought the plan, handle accordingly
+                                console.log('User has already bought the plan');
+                                Toastify({
+                                    text: "User has already bought the plan",
+                                    duration: 2000,
+                                    gravity: "bottom",
+                                    position: "right",
+                                    backgroundColor: "linear-gradient(to right, #4CAF50, #006400)",
+                                    stopOnFocus: true
+                                }).showToast();
+
+                                
+                            }
+
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error checking if user has bought the plan:', error);
+                        }
+                    });
+                    
+                    
+
                 } else {
                     // Plan does not exist, handle accordingly
                     console.error('Plan does not exist in the database.');
@@ -39,6 +80,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.error('Error checking plan existence:', error);
             }
         });
+    }
+
+    function changeView(view) {
+        window.history.pushState({ path: view }, '', '?plan=' + view);
+        location.reload();
     }
 
     // Function to open PayPal dialog
@@ -54,11 +100,11 @@ document.addEventListener("DOMContentLoaded", function() {
         var paypalButtonContainer = document.getElementById('paypal-button-container');
         paypalButtonContainer.innerHTML = '<div id="paypal-button"></div>';
         // Call initiatePayPalPayment function when PayPal button is clicked
-        initiatePayPalPayment(price, planName);
+        initiatePayPalPayment(price, planName, planId);
     }
 
     // Function to initiate PayPal payment
-    function initiatePayPalPayment(price, planName) {
+    function initiatePayPalPayment(price, planName, planId) {
         // Call PayPal SDK to initiate payment
         paypal.Buttons({
             createOrder: function(data, actions) {
@@ -72,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function() {
             },
             onApprove: function(data, actions) {
                 return actions.order.capture().then(function(details) {
-                    handlePaymentSuccess(data.orderID, details, planName); // Pass planName to handlePaymentSuccess
+                    handlePaymentSuccess(data.orderID, details, planName, planId); // Pass planName to handlePaymentSuccess
                     console.log('Transaction ID: ' + data.orderID);
                     // Close the dialog after payment
                     closeDialog();
@@ -82,20 +128,21 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Function to handle payment success
-    function handlePaymentSuccess(orderID, details, planName) {
+    function handlePaymentSuccess(orderID, details, planName, planId) {
         // Payment successful, handle confirmation here
-        console.log('Transaction ID: ' + orderID);
-        console.log('Amount: ' + details.purchase_units[0].amount.value);
-        console.log('User Name: ' + details.payer.name.given_name + ' ' + details.payer.name.surname);
+        // console.log('Transaction ID: ' + orderID);
+        // console.log('Amount: ' + details.purchase_units[0].amount.value);
+        // console.log('User Name: ' + details.payer.name.given_name + ' ' + details.payer.name.surname);
 
         // Preparing data for insertion
-        var userId = subscription_ajax_object.current_user_id;
+        // var userId = subscription_ajax_object.current_user_id;
         var subscriptionName = planName; // Use the plan name passed from initiatePayPalPayment
         var amount = details.purchase_units[0].amount.value;
         var datetime = new Date().toISOString().slice(0, 19).replace('T', ' '); // Current date/time
-        var planType = 'Your Plan Type'; // Replace with actual plan type
+        // var planType = 'Your Plan Type'; // Replace with actual plan type
         var transactionId = orderID;
         var status = 'Completed'; // Assuming the transaction is successful
+        var planId = planId;
 
         // AJAX call to save transaction details in the database
         jQuery.ajax({
@@ -103,14 +150,15 @@ document.addEventListener("DOMContentLoaded", function() {
             type: 'POST',
             data: {
                 action: 'save_transaction_details', // Custom AJAX action
-                userId: userId,
+                // userId: userId,
                 subscriptionName: subscriptionName,
                 amount: amount,
                 datetime: datetime,
-                planType: planType,
+                // planType: planType,
                 transactionId: transactionId,
                 status: status,
-                details: details
+                details: details,
+                planid: planId
             },
             success: function(response) {
                 // Display toast notification for transaction completion
@@ -151,6 +199,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    
     // Inject CSS for dialog styling
     var dialogCSS = `
     #paypal-dialog {

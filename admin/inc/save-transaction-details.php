@@ -1,5 +1,15 @@
 <?php
 
+// Get Data of plan from plan Meta Table
+function get_subscription_plan($table_name, $post_id, $key) {
+    global $wpdb;
+    $table = $wpdb->prefix . $table_name;
+    $query_sql = "SELECT * FROM $table WHERE post_id = $post_id AND meta_key LIKE '$key'";
+    $query = $wpdb->get_results( $query_sql );
+    foreach ($query as $value) {
+        return $value->meta_value;
+    }
+}
 
 function save_transaction_details() {
     // Check if user is logged in
@@ -10,7 +20,6 @@ function save_transaction_details() {
     // Get current user ID and name
     $user_id = get_current_user_id();
     $user_name = get_user_meta($user_id, 'first_name', true) . ' ' . get_user_meta($user_id, 'last_name', true);
-
     $user = get_userdata($user_id);
     $profile_name = $user->display_name;
 
@@ -21,6 +30,20 @@ function save_transaction_details() {
     $planType = isset($_POST['planType']) ? $_POST['planType'] : '';
     $transactionId = isset($_POST['transactionId']) ? $_POST['transactionId'] : '';
     $status = isset($_POST['status']) ? $_POST['status'] : '';
+    $planId = isset($_POST['planid']) ? $_POST['planid'] : '';
+    $plan_duration = get_subscription_plan('easy_subscription_plan', $planId, 'easy_sub_duration');
+    $plan_days = get_subscription_plan('easy_subscription_plan', $planId, 'easy_sub_duration_days');
+    // $combined = $halt . ' ' . $halt2;
+
+    // Combine $halt and $halt2 into an array
+    $_planduration = array(
+        'plan_Duration' => $plan_duration,
+        'plan_Days' => $plan_days
+    );
+
+    // Serialize the combined array
+    $serialized_planduration = serialize($_planduration);
+
     // $details = isset($_POST['details']) ? json_encode($_POST['details']) : '';
 
     // Get the JSON string
@@ -48,7 +71,7 @@ function save_transaction_details() {
         'subscription_name' => $subscriptionName,
         'amount' => $amount,
         'datetime' => $datetime,
-        'plan_type' => $planType,
+        'plan_type' => $serialized_planduration,
         'transaction_id' => $transactionId,
         'status' => $status,
         'ip_address' => $ip_address,
