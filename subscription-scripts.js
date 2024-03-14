@@ -57,8 +57,6 @@ document.addEventListener("DOMContentLoaded", function() {
                                     backgroundColor: "linear-gradient(to right, #4CAF50, #006400)",
                                     stopOnFocus: true
                                 }).showToast();
-
-                                
                             }
 
                         },
