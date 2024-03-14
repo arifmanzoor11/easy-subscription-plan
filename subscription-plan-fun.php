@@ -58,9 +58,6 @@ add_action('wp_ajax_plan_validator', 'plan_validator_ajax_handler'); // For logg
 add_action('wp_ajax_nopriv_plan_validator', 'plan_validator_ajax_handler'); // For non-logged in users
 
 
-
-
-
 // Function to check if the user has bought a plan and has an active subscription
 function user_has_bought_plan() {
     $user_id = get_current_user_id();
@@ -97,14 +94,6 @@ function ajax_user_has_bought_plan() {
 }
 add_action('wp_ajax_user_has_bought_plan', 'ajax_user_has_bought_plan'); // For logged in users
 add_action('wp_ajax_nopriv_user_has_bought_plan', 'ajax_user_has_bought_plan'); // For non-logged in users
-
-
-
-
-
-
-
-
 
 
 // function block_qr_for_non_subscribers() {
