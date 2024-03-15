@@ -1,4 +1,4 @@
-# easy-subscription-plan
+# Easy Subscription Plan
 
 Version: 1.1.5
 * fixed the securty issues
