@@ -38,6 +38,7 @@ function display_subscription_plans() {
                     }
                 }
                 $get_esysubscription_setting = unserialize(get_option('esysubscription_setting'));
+                $d_subs_cu = $get_esysubscription_setting[0];
                 // Display the subscription plan card for the current post ID
                 ?>
                 <button class="paypal-button" data-price="<?php echo $price; ?>" data-plan-id="<?php echo $post_id; ?>"
@@ -46,10 +47,10 @@ function display_subscription_plans() {
                     
                 <?php $image =  wp_get_attachment_image_src( get_post_thumbnail_id($post_id) ); ?>
                     <img src="<?php echo $image[0] ;?>">
-                    <h3><b>$ <?php echo $price; ?></b></h3>
+                    <h3><b><?php symbol_settings($d_subs_cu); ?> <?php echo $price; ?></b></h3>
                     <p><b><?php echo esc_html($post_title); ?></b></p>
                     <p>Duration: <b><?php echo $duration; ?>  <?php echo get_meta_subscription_plan('easy_subscription_plan', $post_id , 'easy_sub_duration_days') ?>(s)</b></p>
-                    <p>Price: <b>$<?php echo $price; ?></b></p>
+                    <p>Price: <b><?php symbol_settings($d_subs_cu); ?><?php echo $price; ?></b></p>
                     <?php echo get_meta_subscription_plan('easy_subscription_plan', $post_id , 'subscription_plan_content') ?>
                 </div>
                 </button>

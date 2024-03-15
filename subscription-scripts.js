@@ -14,7 +14,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Function to check if plan exists before initiating PayPal payment
     function checkPlanExistence(price, planName, planId) {
+        
         // AJAX call to check if plan exists
+        jQuery(".subscription-plans").after('<div class="loader-container"><div class="loader"></div>Checking, please wait.</div>');
         jQuery.ajax({
             url: subscription_ajax_object.ajax_url,
             type: 'POST',
@@ -22,49 +24,51 @@ document.addEventListener("DOMContentLoaded", function() {
                 action: 'plan_validator',
                 price: price,
                 planName: planName,
-                planId: planId
+                planId: planId,
+                dataType: "JSON",
             },
             success: function(response) {
-                if (response == true) {
+                var objJSON = JSON.parse(response);
+
+                if (objJSON.Code == '200') {
                     // Plan exists, open PayPal dialog
-
-
                     jQuery.ajax({
                         url: subscription_ajax_object.ajax_url,
                         type: 'POST',
                         data: {
                             action: 'user_has_bought_plan',
                         },
-                        success: function(response) {
-                            if (response === 'true') {
+                        success: function(bought_plan_response) {
+                            var objJSON = JSON.parse(bought_plan_response);
+                            // console.log(objJSON_bought.code);
+                            if (objJSON.Code == '201') {
                                 // User has bought the plan, open PayPal dialog                                
                                 openPayPalDialog(price, planName, planId);
-                            } else if(response === '404') {
+                            } 
+                            else if (objJSON.Code == '203')  {
+                                // User has already bought the plan, handle accordingly
+                                // console.log('User has already bought the plan');
+                                Toastify({
+                                    text: "You Have Already Purchased A Plan",
+                                    duration: 4000,
+                                    gravity: "bottom",
+                                    position: "right",
+                                    background: "linear-gradient(to right, #4CAF50, #006400)",
+                                    stopOnFocus: true
+                                }).showToast();
+                            }
+                            else if(response == '404') {
                                 // User is not logged in, handle accordingly
                                 console.log('User is not logged in');
                                 // window.location.href = '/wp-admin';
                                 changeView('no-authentication');
                                 // Display error message to the user or handle it as needed
-                            } else {
-
-                                // User has already bought the plan, handle accordingly
-                                console.log('User has already bought the plan');
-                                Toastify({
-                                    text: "User has already bought the plan",
-                                    duration: 2000,
-                                    gravity: "bottom",
-                                    position: "right",
-                                    backgroundColor: "linear-gradient(to right, #4CAF50, #006400)",
-                                    stopOnFocus: true
-                                }).showToast();
-                            }
-
+                            } 
                         },
                         error: function(xhr, status, error) {
                             console.error('Error checking if user has bought the plan:', error);
                         }
                     });
-                    
                     
 
                 } else {
@@ -73,11 +77,16 @@ document.addEventListener("DOMContentLoaded", function() {
                     // Display error message to the user
                     console.log('Plan does not exist in the database.');
                 }
+                jQuery(".loader-container").hide();
             },
             error: function(xhr, status, error) {
                 console.error('Error checking plan existence:', error);
+                jQuery(".loader-container").hide();
             }
+            
+        
         });
+        
     }
 
     function changeView(view) {
