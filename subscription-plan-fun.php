@@ -3,7 +3,7 @@
 * Plugin Name: Easy Subscription Plans
 * Plugin URI: http://guitarchordslyrics.com
 * Description: Process payments, establish subscription plans, and control access to content on your membership site with easy subscription Plans.
-* Version: 1.1.5
+* Version: 1.1.6
 * Author: Arif M.
 * Author URI: http://guitarchordslyrics.com
 * License: GNU GENERAL PUBLIC LICENSE
@@ -22,8 +22,9 @@ register_activation_hook(__FILE__, 'subscription_views_and_status');
 function enqueue_subscription_scripts() {
     // Enqueue PayPal SDK and Toastify
     $get_esysubscription_setting = unserialize(get_option('esysubscription_setting'));
-    $client_id = $get_esysubscription_setting[1];                
-    wp_enqueue_script('paypal-sdk', 'https://www.paypal.com/sdk/js?client-id=' . $client_id . '', array(), null, true);
+    $client_id = $get_esysubscription_setting[1];
+    $curency = $get_esysubscription_setting[0];
+    wp_enqueue_script('paypal-sdk', 'https://www.paypal.com/sdk/js?client-id=' . $client_id . '&currency=' . symbol_url($curency) . '', array(), null, true);
     wp_enqueue_script('toastify-js', 'https://cdn.jsdelivr.net/npm/toastify-js', array(), null, true);
     wp_enqueue_style('toastify-css', 'https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.css');
     wp_enqueue_style('easy-subscription-plan-css', plugin_dir_url(__FILE__) . 'assets/css/easy-subscription-plan.css');
@@ -49,7 +50,8 @@ function plan_validator_ajax_handler() {
     $validationPlanname = get_the_title($planId);
     
     if($price == $validationPrice && $planName == $validationPlanname){
-      echo 1;
+        echo json_encode(array('Code' => '200', 'Value' => 'Plan Exist'));
+        exit;
     }
 
     wp_die(); //terminate the AJAX handler
@@ -76,14 +78,17 @@ function user_has_bought_plan() {
         // If subscription is found, check if it's expired
         if (is_subscription_expired($user_id)) {
             // Subscription is expired, so return true to allow user to make payment
-            return true;
+            echo json_encode(array('Code' => '202', 'Value' => 'Subscription is expired'));
+            exit;
         } else {
             // Subscription is active, so return false to prevent payment method from appearing
-            return false;
+            echo json_encode(array('Code' => '203', 'Value' => 'Subscription is active'));
+            exit;
         }
     } else {
         // if user has not bought the plan than returning true so that payment user can make payment
-        return true;
+        echo json_encode(array('Code' => '201', 'Value' => 'Not Bought Plan'));
+        exit;
     }
 }
 
@@ -94,6 +99,14 @@ function ajax_user_has_bought_plan() {
 }
 add_action('wp_ajax_user_has_bought_plan', 'ajax_user_has_bought_plan'); // For logged in users
 add_action('wp_ajax_nopriv_user_has_bought_plan', 'ajax_user_has_bought_plan'); // For non-logged in users
+
+
+
+
+
+
+
+
 
 
 // function block_qr_for_non_subscribers() {
@@ -692,4 +705,54 @@ add_action('admin_post_nopriv_block_user', 'block_user_action'); // Allow non-lo
 add_action('admin_post_unblock_user', 'unblock_user_action');
 add_action('admin_post_nopriv_unblock_user', 'unblock_user_action'); // Allow non-logged in users to access the action
 
+function symbol_settings($price = "usd") {
+    switch ($price) {
+    case 'usd':
+        echo '$';
+        break;
+    case 'gbp':
+        echo '£';
+        break;
+    case 'cad':
+        echo '$';
+        break;
+    case 'eur':
+        echo '€';
+        break;
+    case 'ars':
+        echo '$';
+        break;
+    case 'bbd':
+        echo '$';
+        break;
+    case 'aud':
+        echo '$';
+        break;
+    }
+}
 
+function symbol_url($price = "usd") {
+    switch ($price) {
+    case 'usd':
+        return 'USD';
+        break;
+    case 'gbp':
+        return 'GBP';
+        break;
+    case 'cad':
+        return 'CAD';
+        break;
+    case 'eur':
+        return 'EUR';
+        break;
+    case 'ars':
+        return 'ARS';
+        break;
+    case 'bbd':
+        return 'BBD';
+        break;
+    case 'aud':
+        return 'AUD';
+        break;
+    }
+}
