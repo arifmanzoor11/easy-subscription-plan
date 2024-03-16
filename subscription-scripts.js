@@ -28,9 +28,22 @@ document.addEventListener("DOMContentLoaded", function() {
                 dataType: "JSON",
             },
             success: function(response) {
+                
                 var objJSON = JSON.parse(response);
+                if (objJSON.Code == '150')  {
+                    // User has already bought the plan, handle accordingly
+                    // console.log('User has already bought the plan');
+                    Toastify({
+                        text: "You need to log in before purchasing a plan",
+                        duration: 4000,
+                        gravity: "bottom",
+                        position: "right",
+                        background: "linear-gradient(to right, #4CAF50, #006400)",
+                        stopOnFocus: true
+                    }).showToast();
+                }
 
-                if (objJSON.Code == '200') {
+                else if (objJSON.Code == '200') {
                     // Plan exists, open PayPal dialog
                     jQuery.ajax({
                         url: subscription_ajax_object.ajax_url,
@@ -40,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         },
                         success: function(bought_plan_response) {
                             var objJSON = JSON.parse(bought_plan_response);
-                            // console.log(objJSON_bought.code);
+                           
                             if (objJSON.Code == '201') {
                                 // User has bought the plan, open PayPal dialog                                
                                 openPayPalDialog(price, planName, planId);
@@ -84,7 +97,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 jQuery(".loader-container").hide();
             }
             
-        
         });
         
     }

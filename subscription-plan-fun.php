@@ -43,17 +43,21 @@ include_once(plugin_dir_path(__FILE__) . 'inc/subscription_plans_shortcode.php')
 // AJAX handler to check if a plan exists in the database
 function plan_validator_ajax_handler() {
     // Retrieve price and plan name from AJAX request
-    $price = $_POST['price'];
-    $planName = $_POST['planName'];
-    $planId = $_POST['planId'];
-    $validationPrice = get_meta_subscription_plan('easy_subscription_plan', $planId, 'easy_sub_price');
-    $validationPlanname = get_the_title($planId);
-    
-    if($price == $validationPrice && $planName == $validationPlanname){
-        echo json_encode(array('Code' => '200', 'Value' => 'Plan Exist'));
+    if ( !is_user_logged_in() ) {
+        echo json_encode(array('Code' => '150', 'Value' => 'User not logged In'));
         exit;
+    } else {
+        $price = $_POST['price'];
+        $planName = $_POST['planName'];
+        $planId = $_POST['planId'];
+        $validationPrice = get_meta_subscription_plan('easy_subscription_plan', $planId, 'easy_sub_price');
+        $validationPlanname = get_the_title($planId);
+        
+        if($price == $validationPrice && $planName == $validationPlanname){
+            echo json_encode(array('Code' => '200', 'Value' => 'Plan Exist'));
+            exit;
+        }
     }
-
     wp_die(); //terminate the AJAX handler
 }
 add_action('wp_ajax_plan_validator', 'plan_validator_ajax_handler'); // For logged in users
