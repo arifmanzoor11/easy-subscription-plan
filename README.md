@@ -1,5 +1,11 @@
 # Easy Subscription Plan
 
+Version: 1.1.7
+* Fix the bugs in json response while purchasing the Plan.
+* Add functionalty to admin panel and frontend for Redirect After purchasing Plan.
+* fix the bug when user is not logged in dont allow to click on plans 
+* Multiple Bugs fix
+
 Version: 1.1.6
 * Fix the bugs in json response.
 * Fix the designs issue like button style, model designs.

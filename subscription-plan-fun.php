@@ -3,7 +3,7 @@
 * Plugin Name: Easy Subscription Plans
 * Plugin URI: http://guitarchordslyrics.com
 * Description: Process payments, establish subscription plans, and control access to content on your membership site with easy subscription Plans.
-* Version: 1.1.6
+* Version: 1.1.7
 * Author: Arif M.
 * Author URI: http://guitarchordslyrics.com
 * License: GNU GENERAL PUBLIC LICENSE

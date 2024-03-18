@@ -162,6 +162,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var transactionId = orderID;
         var status = 'Completed'; // Assuming the transaction is successful
         var planId = planId;
+        jQuery(".subscription-plans").after('<div class="loader-container"><div class="loader"></div>Loading, please wait.</div>');
 
         // AJAX call to save transaction details in the database
         jQuery.ajax({
@@ -180,18 +181,31 @@ document.addEventListener("DOMContentLoaded", function() {
                 planid: planId
             },
             success: function(response) {
+                // console.log(response);
+                var SuccessVal = JSON.parse(response);
+                console.log(SuccessVal);
+                if(SuccessVal.Code == '200'){
+                jQuery(".loader-container").hide();
+
                 // Display toast notification for transaction completion
                 Toastify({
-                    text: "Transaction completed",
+                    text: SuccessVal.Message,
                     duration: 3000,
                     gravity: "bottom",
                     position: "right",
                     backgroundColor: "linear-gradient(to right, #4CAF50, #006400)",
                     stopOnFocus: true
                 }).showToast();
-            },
+                setTimeout(function () {
+                    window.location.href = SuccessVal.Value;
+                }, 5000)
+                
+                 
+            }},
             error: function(xhr, status, error) {
                 console.error('Error saving transaction details:', error);
+                jQuery(".loader-container").hide();
+
             }
         });
     }

@@ -81,7 +81,26 @@ function save_transaction_details() {
     ));
 
     // Send success response
-    wp_send_json_success('Transaction details saved successfully');
+    $get_esysubscription_setting = unserialize(get_option('esysubscription_setting'));
+    $PageId = $get_esysubscription_setting['after_purchasing_plan'];
+    if ($PageId) {
+        $PageUrl = get_permalink($PageId);
+        $PageTitle = get_the_title($PageId);
+        echo json_encode( array(
+            'Code' => "200", 
+            'Message' => 'Transaction successfully. Redireting to '.$PageTitle.' Page', 
+            'Value' => $PageUrl )
+        );
+    } else {
+    $PageId = url_to_postid(home_url());
+    $PageUrl = get_permalink($PageId);
+    $PageTitle = get_the_title($PageId);
+    echo json_encode( array(
+        'Code' => "200", 
+        'Message' => 'Transaction successfully. Redireting to '.$PageTitle.' Page', 
+        'Value' => $PageUrl )
+    );}
+    wp_die();
 }
 
 add_action('wp_ajax_save_transaction_details', 'save_transaction_details');
